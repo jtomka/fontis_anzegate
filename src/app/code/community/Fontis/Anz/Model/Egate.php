@@ -58,13 +58,18 @@ class Fontis_Anz_Model_Egate extends Mage_Payment_Model_Method_Cc
         return Mage::getBaseDir() . '/var/log/anz_egate.log';
     }
 
+    private function isTestMode()
+    {
+        return (bool) Mage::getStoreConfig('payment/anz_egate/test');
+    }
+
     /**
      * Returns the MerchantID as set in the configuration.
      * Note that if test mode is active then "TEST" will be prepended to the ID.
      */
     public function getMerchantId()
 	{
-        if(Mage::getStoreConfig('payment/anz_egate/test')) {
+        if($this->isTestMode()) {
             return 'TEST' . Mage::getStoreConfig('payment/anz_egate/merchant_id');
         }
         else {
