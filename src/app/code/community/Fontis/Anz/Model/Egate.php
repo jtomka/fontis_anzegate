@@ -133,7 +133,12 @@ class Fontis_Anz_Model_Egate extends Mage_Payment_Model_Method_Cc
                     $payment->setStatus(self::STATUS_APPROVED)->setLastTransId($result['vpc_TransactionNo']);
                     break;
                 case 1:         /* Unspecified failure */
-                    Mage::throwException("An error has occurred between our store and our credit card processor.  Please try again. If the error persists, please come back later. Your card has not been charged.");
+                    if ($this->isTestMode()) {
+                        $message = Mage::helper('anz')->__("Check that the card details used for the transaction match the test card details specified in your ANZ eGate kit and that the transaction value ended in 00.");
+                    } else {
+                        $message = Mage::helper('anz')->__("An error has occurred between our store and our credit card processor.  Please try again. If the error persists, please come back later. Your card has not been charged.");
+                    }
+                    Mage::throwException($message);
                     break;
                 case 2:         /* Card declined */
                     Mage::throwException("The credit card details you provided have been declined by our credit card processor. Please review the payment details you have entered and try again. If the problem persists, please contact your card issuer.");
